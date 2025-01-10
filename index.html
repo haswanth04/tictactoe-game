@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -12,12 +13,29 @@
                     animation: {
                         'pulse-scale': 'pulse-scale 1s infinite',
                         'bounce-once': 'bounce 0.5s ease-in-out',
+                        'wiggle': 'wiggle 0.5s ease-in-out',
+                        'celebrate': 'celebrate 0.7s ease-in-out',
+                        'fade-in': 'fadeIn 0.5s ease-in',
                     },
                     keyframes: {
                         'pulse-scale': {
                             '0%, 100%': { transform: 'scale(1)' },
                             '50%': { transform: 'scale(1.05)' },
-                        }
+                        },
+                        'wiggle': {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '25%': { transform: 'rotate(-5deg)' },
+                            '75%': { transform: 'rotate(5deg)' },
+                        },
+                        'celebrate': {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.2) rotate(10deg)' },
+                            '100%': { transform: 'scale(1)' },
+                        },
+                        'fadeIn': {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
                     }
                 }
             }
