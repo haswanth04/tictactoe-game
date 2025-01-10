@@ -53,13 +53,21 @@ class TicTacToe {
         if (this.board[index] === '' && this.gameActive) {
             this.board[index] = this.currentPlayer;
             cell.textContent = this.currentPlayer;
-            cell.classList.add('animate-bounce-once');
+            
+            // Add fade-in animation when placing mark
+            cell.classList.add('animate-fade-in');
             
             if (this.checkWin()) {
                 this.handleWin();
             } else if (this.checkDraw()) {
                 this.handleDraw();
             } else {
+                // Add wiggle animation on player switch
+                cell.classList.add('animate-wiggle');
+                setTimeout(() => {
+                    cell.classList.remove('animate-wiggle');
+                }, 500);
+                
                 this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
                 this.updateStatus();
             }
@@ -88,13 +96,49 @@ class TicTacToe {
     handleWin() {
         this.gameActive = false;
         this.statusMessage.textContent = `${this.playerNames[this.currentPlayer]} Wins!`;
+        this.statusMessage.classList.add('animate-celebrate', 'text-green-600', 'font-bold');
         this.scores[this.currentPlayer]++;
         this.updateScores();
+        this.celebrateWin();
+    }
+
+    celebrateWin() {
+        // Trigger confetti
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        // Add celebration animation to winning cells
+        this.winPatterns.forEach(pattern => {
+            const line = pattern.map(index => this.board[index]);
+            if (line.every(mark => mark === this.currentPlayer)) {
+                pattern.forEach((index, i) => {
+                    setTimeout(() => {
+                        this.cells[index].classList.add('animate-celebrate', 'bg-green-100', 'text-green-800');
+                    }, i * 100); // Stagger the animations
+                });
+            }
+        });
+
+        // Animate score update
+        const scoreElement = document.getElementById(`score-${this.currentPlayer.toLowerCase()}`);
+        scoreElement.classList.add('animate-wiggle', 'text-green-600');
+        setTimeout(() => {
+            scoreElement.classList.remove('animate-wiggle', 'text-green-600');
+        }, 1000);
     }
 
     handleDraw() {
         this.gameActive = false;
         this.statusMessage.textContent = "It's a Draw!";
+        this.statusMessage.classList.add('animate-wiggle', 'text-blue-600');
+        
+        // Add subtle animation to all cells
+        this.cells.forEach(cell => {
+            cell.classList.add('animate-pulse-scale', 'bg-blue-50');
+        });
     }
 
     updateStatus() {
@@ -111,11 +155,21 @@ class TicTacToe {
         this.currentPlayer = 'X';
         this.gameActive = true;
         
+        // Reset all animations and classes
         this.cells.forEach(cell => {
             cell.textContent = '';
-            cell.classList.remove('animate-pulse-scale', 'bg-green-100', 'text-green-800', 'animate-bounce-once');
+            cell.classList.remove(
+                'animate-pulse-scale', 
+                'animate-celebrate', 
+                'animate-wiggle',
+                'animate-fade-in',
+                'bg-green-100', 
+                'text-green-800'
+            );
         });
         
+        // Reset status message styling
+        this.statusMessage.classList.remove('animate-celebrate', 'text-green-600', 'font-bold');
         this.updateStatus();
     }
 }
